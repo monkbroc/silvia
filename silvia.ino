@@ -41,7 +41,6 @@ void loop() {
     readTemperature();
     controlTemperature();
     publishData();
-    
     controlRelayByDelay();
 }
 
@@ -85,13 +84,21 @@ void publishData() {
 }
 
 void controlRelayByDelay() {
-    if(relayDc > 0) {
+    unsigned long start = millis();
+    const int period = 1000; /* ms */
+    int dc = (int)(relayDc * period / 100.0);
+    if(dc > 0) {
         digitalWrite(RELAY_PIN, LOW);
-        delay((unsigned int)(relayDc * 10));
     }
-    if(relayDc < 100) {
-        digitalWrite(RELAY_PIN, HIGH);
-        delay(1000 - (unsigned int)(relayDc * 10));
+    bool high = false;
+    while(millis() - start < period) {
+        if(!high && millis() - start >= dc) {
+            digitalWrite(RELAY_PIN, HIGH);
+            high = true;
+        }
+        // Process Wi-Fi messages
+        SPARK_WLAN_Loop();
+        delayMicroseconds(1000); /* 1ms */
     }
 }
 
