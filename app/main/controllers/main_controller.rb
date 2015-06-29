@@ -2,7 +2,7 @@
 module Main
   class MainController < Volt::ModelController
     def index
-      # Add code for when the index view is loaded
+      self.model = store.coffee_machines.first_or_create
     end
 
     def about
@@ -10,10 +10,6 @@ module Main
     end
 
     private
-
-    def temperature
-      96.0
-    end
 
     # The main template contains a #template binding that shows another
     # template.  This is the path to that template.  It may change based

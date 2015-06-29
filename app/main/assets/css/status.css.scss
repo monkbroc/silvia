@@ -45,3 +45,10 @@
   font-family: "Open Sans";
   font-weight: 300;
 }
+
+@media (min-width: 768px) {
+  .progress-side {
+    margin-top: 25px;
+  }
+}
+
