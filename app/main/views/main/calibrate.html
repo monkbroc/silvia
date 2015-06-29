@@ -1,0 +1,42 @@
+<:Title>
+  Calibrate
+
+<:Body>
+  {{ view "status" }}
+
+  <section>
+    <h1>Calibrate</h1>
+
+    <table class="calibration-table table table-striped">
+      <thead>
+        <tr>
+          <th>Offset</th>
+          <th>+</th>
+          <th>Proportional</th>
+          <th>&times;</th>
+          <th>Error</th>
+          <th>+</th>
+          <th>Integral</th>
+          <th>&times;</th>
+          <th>&Sigma; Error</th>
+          <th>=</th>
+          <th>Output</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>{{_offset.round(1)}}</th>
+          <th>+</th>
+          <th>{{_proportional.round(1)}}</th>
+          <th>&times;</th>
+          <th>{{_error.round(1)}}</th>
+          <th>+</th>
+          <th>{{_integral.round(3)}}</th>
+          <th>&times;</th>
+          <th>{{_sum_error.round(1)}}</th>
+          <th>=</th>
+          <th>{{_output.round(1)}}</th>
+        </tr>
+      </tbody>
+    </table>
+  </section>

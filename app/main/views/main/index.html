@@ -2,27 +2,4 @@
   Silvia Espresso
 
 <:Body>
-  <section>
-    <h2 class="text-center">Temperature</h2>
-    <div class="circle circle-medium circle-border">
-      <div class="circle-inner">
-        <div class="score-text">
-          {{_temperature.round}}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="row">
-      <div class="col-sm-3 col-md-3 col-md-offset-2">
-        <h2>Heater <b>{{_power.round}}%</b></h2>
-      </div>
-      <div class="col-sm-9 col-md-5">
-        <div class="progress progress-side">
-          <div class="progress-bar progress-bar-warning" style="width: {{_power_log}}%"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  {{ view "status" }}

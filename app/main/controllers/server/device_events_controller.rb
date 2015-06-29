@@ -3,6 +3,7 @@ module Main
   class DeviceEventsController < Volt::HttpController
     def create
       if params._event == "coffee"
+        puts params._data
         data = JSON.parse params._data
         store.coffee_machines.first_or_create.then do |coffee_machine|
           coffee_machine._temperature = data["temp"]

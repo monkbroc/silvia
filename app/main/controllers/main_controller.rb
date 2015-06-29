@@ -2,11 +2,21 @@
 module Main
   class MainController < Volt::ModelController
     def index
+    end
+
+    def status
       self.model = store.coffee_machines.first_or_create
     end
 
-    def about
-      # Add code for when the about view is loaded
+    def calibrate
+      self.model = Volt::Model.new({
+        offset: 14,
+        proportional: 3.0,
+        error: 0.5,
+        integral: 0.01,
+        sum_error: -10.5,
+        output: 6
+      })
     end
 
     private
