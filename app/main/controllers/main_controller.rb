@@ -11,6 +11,10 @@ module Main
 
     private
 
+    def temperature
+      96.0
+    end
+
     # The main template contains a #template binding that shows another
     # template.  This is the path to that template.  It may change based
     # on the params._component, params._controller, and params._action values.

@@ -6,6 +6,9 @@ client '/about', action: 'about'
 client '/signup', component: 'user_templates', controller: 'signup'
 client '/login', component: 'user_templates', controller: 'login'
 
+# Webhook endpoint for Particle
+post '/device_events', controller: 'device_events', action: 'create'
+
 # The main route, this should be last. It will match any params not
 # previously matched.
 client '/', {}

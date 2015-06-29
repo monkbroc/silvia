@@ -1,0 +1,49 @@
+// From the Ravel WordPress theme
+// http://themehybrid.com/themes/ravel
+
+body {
+  background: #2d3a42 url(../images/body_gradient.png) repeat-x;
+  overflow-x: hidden;
+  text-shadow: 1px 1px 0 rgba(0,0,0,.25);
+  word-wrap: break-word;
+}
+
+::before,
+::after {
+  text-shadow: none;
+}
+
+
+.container > .wrap {
+  margin: 0 auto;
+  position: relative;
+}
+
+/* start background decoration shapes */
+.container > .wrap::before,
+.container > .wrap::after {
+  background: transparent;
+  border: 700px solid rgba(0,0,0,0.07);
+  content: '';
+  height: 3200px;
+  margin: -1600px -128px 0 0;
+  position: absolute;
+  right: 50%;
+  top: 0;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  width: 3200px;
+  z-index: -1;
+}
+
+.container > .wrap::after {
+  margin-left: -128px;
+  margin-right: 0;
+  left: 50%;
+  right: auto;
+}
+/* end background decoration shapes */
+

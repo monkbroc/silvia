@@ -2,7 +2,8 @@
 # then any config options in config.public are passed to the client as well.
 
 require 'dotenv'
-Dotenv.load
+require 'pathname'
+Dotenv.load Pathname(__FILE__) + ".." + ".." + ".env"
 
 Volt.configure do |config|
   # Setup your global app config here.
