@@ -1,6 +1,9 @@
 # app.rb is used to configure your app.  This code is only run on the server,
 # then any config options in config.public are passed to the client as well.
 
+require 'dotenv'
+Dotenv.load
+
 Volt.configure do |config|
   # Setup your global app config here.
 
@@ -18,12 +21,7 @@ Volt.configure do |config|
   # be tampered with.  A random value is generated on new projects that will work
   # without the need to customize.  Make sure this value doesn't leave your server.
   #
-  # For added security we recommend moving the app secret into an environment.  You can
-  # setup that like so:
-  #
-  # config.app_secret = ENV['APP_SECRET']
-  #
-  config.app_secret = 'CQGMRYI94cwo9UkB68thlhNJ0xIkdkR1YXJUrXMu6wWaFhRC3i-3UI-0zGRvrlESljM'
+  config.app_secret = ENV['APP_SECRET']
 
   ###############
   # Log Filtering
@@ -49,7 +47,7 @@ Volt.configure do |config|
   #####################
   # If you are not running behind something like nginx in production, you can
   # have rack deflate all files.
-  # config.deflate = true
+  config.deflate = true
 
   #######################
   # Public configurations
