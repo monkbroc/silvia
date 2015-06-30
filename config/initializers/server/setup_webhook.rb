@@ -1,4 +1,4 @@
-WEBHOOK_URL = "http://#{ENV['PUBLIC_URL']}/device_events"
+WEBHOOK_URL = "http://#{ENV['PUBLIC_HOSTNAME']}/device_events"
 
 def webhook_exists?
   Particle.webhooks.any? do |webhook|
