@@ -1,4 +1,4 @@
-WEBHOOK_URL = "http://monkbroc.dyndns.org:3000/device_events"
+WEBHOOK_URL = "http://#{ENV['PUBLIC_URL']}/device_events"
 
 def webhook_exists?
   Particle.webhooks.any? do |webhook|
