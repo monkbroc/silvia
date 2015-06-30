@@ -19,11 +19,11 @@
       </thead>
       <tbody>
         <tr>
-          <th>{{_error.round(1)}}</th>
-          <th>=</th>
-          <th>{{_target_temperature.round(1)}}</th>
-          <th>-</th>
-          <th>{{_temperature.round(1)}}</th>
+          <td>{{_error.round(1)}}</td>
+          <td>=</td>
+          <td><span contentEditable="true" e-keydown="accept_change(event, 'target_temperature')">{{_target_temperature.round(1)}}</span></td>
+          <td>-</td>
+          <td>{{_temperature.round(1)}}</td>
         </tr>
       </tbody>
     </table>
@@ -44,15 +44,15 @@
       </thead>
       <tbody>
         <tr>
-          <th>{{_power.round(1)}}</th>
-          <th>=</th>
-          <th>{{_offset.round(1)}}</th>
-          <th>+</th>
-          <th>{{_proportional.round(1)}}</th>
-          <th>&times;</th>
-          <th>{{_error.round(1)}}</th>
-          <th>+</th>
-          <th>{{_i_part.round(1)}}</th>
+          <td>{{_power.round(1)}}</td>
+          <td>=</td>
+          <td><span contentEditable="true" e-keydown="accept_change(event, 'offset')">{{_offset.round(1)}}</span></td>
+          <td>+</td>
+          <td><span contentEditable="true" e-keydown="accept_change(event, 'proportional')">{{_proportional.round(1)}}</span></td>
+          <td>&times;</td>
+          <td>{{_error.round(1)}}</td>
+          <td>+</td>
+          <td>{{_i_part.round(1)}}</td>
         </tr>
       </tbody>
     </table>
@@ -71,13 +71,13 @@
       </thead>
       <tbody>
         <tr>
-          <th>{{_i_part.round(1)}}</th>
-          <th>=</th>
-          <th>{{(_i_part - _integral * _error).round(1)}}</th>
-          <th>+</th>
-          <th>{{_integral.round(3)}}</th>
-          <th>&times;</th>
-          <th>{{_error.round(1)}}</th>
+          <td>{{_i_part.round(1)}}</td>
+          <td>=</td>
+          <td>{{(_i_part - _integral * _error).round(1)}}</td>
+          <td>+</td>
+          <td><span contentEditable="true" e-keydown="accept_change(event, 'integral')">{{_integral.round(3)}}</span></td>
+          <td>&times;</td>
+          <td>{{_error.round(1)}}</td>
         </tr>
       </tbody>
     </table>

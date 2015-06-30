@@ -13,6 +13,22 @@ module Main
       CalibrationTasks.get
     end
 
+    def set(field, value)
+      CalibrationTasks.set(field, value)
+    end
+
+    ENTER = 13
+
+    def accept_change(event, name)
+      if event.key_code == ENTER
+        event.prevent_default!
+        js_event = event.js_event
+        value = `$(js_event.target).text()`
+
+        set name, value
+      end
+    end
+
     private
 
     # The main template contains a #template binding that shows another

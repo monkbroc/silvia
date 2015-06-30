@@ -6,7 +6,7 @@ gem 'dotenv'
 gem 'volt', '0.9.3'
 
 # Interact with Particle devices
-gem 'particlerb'
+gem 'particlerb', github: 'monkbroc/particlerb'
 
 ### volt framework ###
 

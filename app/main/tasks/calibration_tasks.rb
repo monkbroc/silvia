@@ -1,20 +1,35 @@
 class CalibrationTasks < Volt::Task
+  FIELD_MAPPING = {
+    "proportional" => "Kp",
+    "integral" => "Ki",
+    "offset" => "Ko",
+    "target_temperature" => "sp",
+    "integral_saturation" => "iSat"
+  }
+
   def get
-    client = Particle::Client.new
-    device = client.device('silvia')
-    cals = JSON.parse device.variable('cals')
+    cals = JSON.parse device.get('cals')
 
     store.coffee_machines.first_or_create.then do |coffee_machine|
-      coffee_machine._proportional = cals["Kp"]
-      coffee_machine._integral = cals["Ki"]
-      coffee_machine._offset = cals["Ko"]
-      coffee_machine._target_temperature = cals["sp"]
-      coffee_machine._integral_saturation = cals["iSat"]
+      FIELD_MAPPING.each do |db_field, hw_field|
+        coffee_machine.send "_#{db_field}=", cals[hw_field]
+      end
 
       true
     end.fail do |error|
       puts "Couldn't do it: #{error}"
       false
     end
+  end
+
+  def set(field, value)
+    mapped_field = FIELD_MAPPING[field]
+    device.call "set", "#{mapped_field}=#{value}"
+  end
+
+  private
+
+  def device
+    @device ||= Particle::Client.new.device('silvia')
   end
 end

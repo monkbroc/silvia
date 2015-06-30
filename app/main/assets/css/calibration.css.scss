@@ -5,8 +5,14 @@
   width: auto;
   max-width: auto;
 
-  th {
+  th, td {
     padding: 6px;
     font-weight: 300;
+  }
+
+  [contentEditable="true"] {
+    padding: 6px 20px;
+    background-color: #df8505;
+    color: white;
   }
 }

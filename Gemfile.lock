@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/monkbroc/particlerb.git
+  revision: 9f14f3dd68e3f67cb21f0c492514409ee15c0b8e
+  specs:
+    particlerb (0.0.4)
+      faraday (~> 0.9.0)
+      faraday_middleware (~> 0.9.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -64,9 +72,6 @@ GEM
       tilt (~> 1.4)
     opal-rspec (0.4.3)
       opal (>= 0.7.0, < 0.9)
-    particlerb (0.0.3)
-      faraday (~> 0.9.0)
-      faraday_middleware (~> 0.9.0)
     poltergeist (1.5.1)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -170,7 +175,7 @@ DEPENDENCIES
   csso-rails (~> 0.3.4)
   dotenv
   opal-rspec (~> 0.4.2)
-  particlerb
+  particlerb!
   poltergeist (~> 1.5.0)
   rbnacl
   rbnacl-libsodium
