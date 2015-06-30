@@ -1,3 +1,10 @@
+// This #include statement was automatically added by the Particle IDE.
+#include "cloud_storage.h"
+
+// Non-volatile storage
+#include "storage.h"
+#include "helpers.h"
+
 // Bubble display
 #include "retro_led.h"
 #include "ht16k33.h"
@@ -9,7 +16,7 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 
 double temperature = 0;
 double relayDc = 0;
-String cals;
+char cals[64] = "";
 
 MAX6675 thermo(SCK, SS, MISO);
 
@@ -19,15 +26,17 @@ const int RELAY_PERIOD_MILLIS = 1000;
 
 RetroLED display;
 
+Storage storage;
+
 void setup() {
-    setupSerial();
+    setupStorage();
     setupCloud();
     setupRelay();
     setupDisplay();
 }
 
-void setupSerial() {
-    Serial.begin(115200);
+void setupStorage() {
+    storage.read();
 }
 
 void setupCloud() {
@@ -36,10 +45,16 @@ void setupCloud() {
     Spark.variable("dc", &relayDc, DOUBLE);
     Spark.variable("cals", &cals, STRING);
     Spark.function("rssi", rssi);
+
+    cloudStorage.setup(&storage);    
 }
 
 int rssi(String arg) {
     return WiFi.RSSI();
+}
+
+int setCal(String arg) {
+    return 0;
 }
 
 void setupRelay() {
@@ -57,6 +72,7 @@ void loop() {
     readTemperature();
     controlTemperature();
     publishData();
+    updateCals();
     controlRelayByDelay();
 }
 
@@ -75,23 +91,22 @@ inline double limit(double value, double min, double max) {
     }
 }
 
-const double targetTemperature = 96.0;
-const double Kp = 2.0;
-const double Ki = 0.01;
-const double Koffset = 6.0;
 double error = 0;
 double pTerm = 0;
-double iTerm = 10.0; /* For initial warmup */
+double iTerm = 0;
 const double iTermSaturation = 10; /* Integral anti-windup */
 const double integralErrorBand = 10; /* Don't compute integral outside this band */
 
 void controlTemperature() {
-    error = targetTemperature - temperature;
-    pTerm = Kp * error;
-    if(error < integralErrorBand && error > -integralErrorBand) {
-        iTerm = limit(Ki * error + iTerm, -iTermSaturation, iTermSaturation);
+    error = storage.getTargetTemperature() - temperature;
+    pTerm = storage.getKp() * error;
+    
+    double band = storage.getIntegralErrorBand();
+    if(error < band && error > -band) {
+        double sat = storage.getiTermSaturation();
+        iTerm = limit(storage.getKi() * error + iTerm, -sat, sat);
     }
-    relayDc = limit(pTerm + iTerm + Koffset, 0, 100);
+    relayDc = limit(pTerm + iTerm + storage.getKo(), 0, 100);
 }
 
 void publishData() {
@@ -104,20 +119,25 @@ void publishData() {
             "\"i\":" + String(iTerm, 1)
             + "}", 60, PRIVATE);
     }
-    
-    cals = String("{"
-            "\"sp\":" + String(targetTemperature, 1) + ","
-            "\"Kp\":" + String(Kp, 1) + ","
-            "\"Ki\":" + String(Ki, 3) + ","
-            "\"Ko\":" + String(Koffset, 1) + ","
-            + "}");
-    
+}
+
+void updateCals() {
+    String calsValue = String("{") +
+            "\"sp\":" + String(storage.getTargetTemperature(), 1) + ","
+            "\"Kp\":" + String(storage.getKp(), 1) + ","
+            "\"Ki\":" + String(storage.getKi(), 3) + ","
+            "\"Ko\":" + String(storage.getKo(), 1) + ","
+            "\"iSat\":" + String(storage.getiTermSaturation(), 1)
+            + "}";
+
+  // Set global char array
+  calsValue.toCharArray(cals, countof(cals));
 }
 
 void controlRelayByDelay() {
     unsigned long start = millis();
-    const int period = 1000; /* ms */
-    int dc = (int)(relayDc * period / 100.0);
+    const unsigned int period = 1000; /* ms */
+    unsigned int dc = (unsigned int)(relayDc * period / 100.0);
     if(dc > 0) {
         digitalWrite(RELAY_PIN, LOW);
         display.setLastDot(true);
