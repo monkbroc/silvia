@@ -1,0 +1,16 @@
+<:Title>
+  Sleep Timer
+
+<:Body>
+  {{ view "status" }}
+
+  <section class="calibratable">
+    <h1>Sleep Timer</h1>
+
+    <h2><button class="btn btn-warning btn-lg" e-click="sleep_on">Sleep</button>
+      until
+      <span contentEditable="true" e-keydown="calibration_keypress(event, 'wakeup_time')" e-focusout="calibration_blur(event, 'wakeup_time')">{{_wakeup_time}}</span></td>
+    </h2>
+
+    <h2><button class="btn btn-success btn-lg" e-click="sleep_off">Wake up!</button></h2>
+  </section>

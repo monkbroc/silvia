@@ -4,7 +4,11 @@
     <div class="circle circle-medium circle-border">
       <div class="circle-inner">
         <div class="score-text">
-          {{_temperature.round}}
+         {{ if _sleeping }}
+           &#128719; <!-- bed -->
+         {{ else }}
+           {{_temperature.round}}
+         {{ end }}
         </div>
       </div>
     </div>

@@ -13,20 +13,37 @@ module Main
       CalibrationTasks.get
     end
 
+    def sleep
+      self.model = store.coffee_machines.first_or_create
+      CalibrationTasks.get_wakeup
+    end
+
     def set(field, value)
       CalibrationTasks.set(field, value)
     end
 
     ENTER = 13
 
-    def accept_change(event, name)
+    def calibration_keypress(event, name)
       if event.key_code == ENTER
         event.prevent_default!
-        js_event = event.js_event
-        value = `$(js_event.target).text()`
-
-        set name, value
+        calibration_blur(event, name)
       end
+    end
+
+    def calibration_blur(event, name)
+      js_event = event.js_event
+      value = `$(js_event.target).text()`
+      set name, value
+    end
+
+    def sleep_on
+      set 'wakeup_time', model._wakeup_time
+      set 'sleep', '1'
+    end
+
+    def sleep_off
+      set 'sleep', '0'
     end
 
     private

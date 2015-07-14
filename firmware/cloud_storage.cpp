@@ -62,7 +62,15 @@ int CloudStorage::get(String name) {
     if(csm->getDouble) {
       // Call method on storage object
       double value = (storage->*(csm->getDouble))();
-      setResult(String(value));
+      int precision;
+      if(value > 1000000) {
+        precision = 0;
+      } else if(value > 1000) {
+        precision = 3;
+      } else {
+        precision = 6;
+      }
+      setResult(String(value, precision));
       return 0;
     } else {
       return -3; /* Nothing defined?!? */

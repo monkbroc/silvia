@@ -1,13 +1,13 @@
-<:Title>
-  Calibrate
+  <:Title>
+    Calibrate
 
-<:Body>
-  {{ view "status" }}
+  <:Body>
+    {{ view "status" }}
 
-  <section>
-    <h1>Calibrate</h1>
+    <section class="calibratable">
+      <h1>Calibrate</h1>
 
-    <table class="calibration-table table table-striped">
+      <table class="calibration-table table table-striped">
       <thead>
         <tr>
           <th>Error</th>
@@ -21,7 +21,7 @@
         <tr>
           <td>{{_error.round(1)}}</td>
           <td>=</td>
-          <td><span contentEditable="true" e-keydown="accept_change(event, 'target_temperature')">{{_target_temperature.round(1)}}</span></td>
+          <td><span contentEditable="true" e-keydown="calibration_keypress(event, 'target_temperature')" e-focusout="calibration_blur(event, 'target_temperature')">{{_target_temperature.round(1)}}</span></td>
           <td>-</td>
           <td>{{_temperature.round(1)}}</td>
         </tr>
@@ -46,9 +46,9 @@
         <tr>
           <td>{{_power.round(1)}}</td>
           <td>=</td>
-          <td><span contentEditable="true" e-keydown="accept_change(event, 'offset')">{{_offset.round(1)}}</span></td>
+          <td><span contentEditable="true" e-keydown="calibration_keypress(event, 'offset')" e-focusout="calibration_blur(event, 'offset')">{{_offset.round(1)}}</span></td>
           <td>+</td>
-          <td><span contentEditable="true" e-keydown="accept_change(event, 'proportional')">{{_proportional.round(1)}}</span></td>
+          <td><span contentEditable="true" e-keydown="calibration_keypress(event, 'proportional')" e-focusout="calibration_blur(event, 'proportional')">{{_proportional.round(1)}}</span></td>
           <td>&times;</td>
           <td>{{_error.round(1)}}</td>
           <td>+</td>
@@ -75,7 +75,7 @@
           <td>=</td>
           <td>{{(_i_part - _integral * _error).round(1)}}</td>
           <td>+</td>
-          <td><span contentEditable="true" e-keydown="accept_change(event, 'integral')">{{_integral.round(3)}}</span></td>
+          <td><span contentEditable="true" e-keydown="calibration_keypress(event, 'integral')" e-focusout="calibration_blur(event, 'integral')">{{_integral.round(3)}}</span></td>
           <td>&times;</td>
           <td>{{_error.round(1)}}</td>
         </tr>

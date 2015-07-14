@@ -9,7 +9,9 @@
     padding: 6px;
     font-weight: 300;
   }
+}
 
+.calibratable {
   [contentEditable="true"] {
     padding: 6px 20px;
     background-color: #df8505;

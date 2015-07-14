@@ -13,6 +13,7 @@ module Main
           coffee_machine._error = data["e"]
           coffee_machine._p_part = data["p"]
           coffee_machine._i_part = data["i"]
+          coffee_machine._sleeping = data["s"] == 1
         end.fail do |error|
           puts "Error saving event: #{error}"
         end
