@@ -1,0 +1,28 @@
+@font-face {
+	font-family: 'silvia';
+	src:url('/assets/fonts/silvia.eot?mk8zjc');
+	src:url('/assets/fonts/silvia.eot?#iefixmk8zjc') format('embedded-opentype'),
+		url('/assets/fonts/silvia.ttf?mk8zjc') format('truetype'),
+		url('/assets/fonts/silvia.woff?mk8zjc') format('woff'),
+		url('/assets/fonts/silvia.svg?mk8zjc#silvia') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="silvia-"], [class*=" silvia-"] {
+	font-family: 'silvia';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.silvia-sleep:before {
+	content: "\e600";
+}
