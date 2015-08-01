@@ -4,7 +4,7 @@ ruby '2.2.1'
 # Load config from .env file
 gem 'dotenv'
 
-gem 'volt', '0.9.4'
+gem 'volt', '0.9.3'
 
 # Interact with Particle devices
 gem 'particlerb', github: 'monkbroc/particlerb'
