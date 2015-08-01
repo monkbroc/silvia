@@ -7,7 +7,7 @@ class HT16K33 {
     public:
     
     void begin(uint8_t deviceNumber = 0);
-    void setBrightness(uint8_t brightness);
+    void setBrightness(uint8_t brightness = DEFAULT_BRIGHTNESS);
     
     static const uint8_t MAX_BRIGHTNESS;
     static const uint8_t DEFAULT_BRIGHTNESS;

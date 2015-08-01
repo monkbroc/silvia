@@ -11,4 +11,3 @@
 #define countof(arr) sizeof(arr) / sizeof(arr[0])
 
 #endif /* __HELPERS_H__ */
-

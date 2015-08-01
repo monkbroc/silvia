@@ -10,6 +10,8 @@ const CloudStorage::CloudStorageMethod CloudStorage::cloudStorageMethods[] = {
   { "Ko", &Storage::setKo, &Storage::getKo },
   { "iSat", &Storage::setiTermSaturation, &Storage::getiTermSaturation },
   { "iBand", &Storage::setIntegralErrorBand, &Storage::getIntegralErrorBand },
+  { "sleep", &Storage::setSleep, &Storage::getSleep },
+  { "Twakeup", &Storage::setTwakeup, &Storage::getTwakeup },
 };
 
 // Singleton instance
@@ -94,4 +96,3 @@ void CloudStorage::setResult(String value) {
   // Set global char array
   value.toCharArray(getResult, countof(getResult));
 }
-

@@ -38,4 +38,3 @@ class CloudStorage {
 extern CloudStorage cloudStorage;
 
 #endif // __CLOUD_STORAGE_H__
-

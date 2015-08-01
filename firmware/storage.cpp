@@ -7,13 +7,15 @@
 #include "application.h"
 
 const Storage::Data Storage::DEFAULT_DATA = {
-  /* version */ 0,
+  /* version */ 1,
   /* TargetTemperature */ 96.0,
   /* Kp                */ 2.0,
   /* Ki                */ 0.01,
   /* Ko                */ 6.0,
   /* iTermSaturation   */ 10.0,
   /* IntegralErrorBand */ 10.0,
+  /* Sleep             */ 0.0,
+  /* Twakeup           */ 1436005800.0, /* 6:30am EST */
 };
 
 void Storage::read() {
@@ -32,13 +34,14 @@ void Storage::migrate() {
 
   while(this->getVersion() != Storage::DEFAULT_DATA.version) {
     switch(this->getVersion()) {
-      // case 1:
-      //   /* XXX added */
-      //   this->setXXX(Storage::DEFAULT_DATA.XXX);
-      //   this->setVersion(2);
-      //   break;
-
       case 0:
+        /* Sleep and Twakeup added */
+        this->setSleep(Storage::DEFAULT_DATA.Sleep);
+        this->setTwakeup(Storage::DEFAULT_DATA.Twakeup);
+        this->setVersion(1);
+        break;
+
+      case 1:
         /* Current version */
         break;
 
@@ -86,6 +89,14 @@ double Storage::getiTermSaturation() {
 
 double Storage::getIntegralErrorBand() {
   return this->data.IntegralErrorBand;
+}
+
+double Storage::getSleep() {
+  return this->data.Sleep;
+}
+
+double Storage::getTwakeup() {
+  return this->data.Twakeup;
 }
 
 void Storage::setVersion(unsigned int value) {
@@ -137,5 +148,16 @@ void Storage::setIntegralErrorBand(double value) {
   }
 }
 
+void Storage::setSleep(double value) {
+  if(this->data.Sleep != value) {
+    this->data.Sleep = value;
+    save(offsetof_and_sizeof(Storage::Data, Sleep));
+  }
+}
 
-
+void Storage::setTwakeup(double value) {
+  if(this->data.Twakeup != value) {
+    this->data.Twakeup = value;
+    save(offsetof_and_sizeof(Storage::Data, Twakeup));
+  }
+}

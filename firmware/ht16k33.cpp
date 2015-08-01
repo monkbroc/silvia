@@ -18,7 +18,6 @@ void HT16K33::begin(uint8_t deviceNumber) {
 
     this->i2cAddress = BASE_SLAVE_ADDRESS + deviceNumber;
     
-    Wire.setSpeed(CLOCK_SPEED_100KHZ);
     Wire.begin();
     
     this->writeCommand(COMMAND_ON);
@@ -55,4 +54,3 @@ void HT16K33::writeDisplay(uint8_t data[], uint8_t start, uint8_t length) {
     }
     Wire.endTransmission();
 }
-

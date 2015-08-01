@@ -8,9 +8,10 @@ class RetroLED {
     public:
     
     void begin(uint8_t deviceNumber = 0);
-    void setBrightness(uint8_t brightness);
-    
+
     void print(float number);
+    void printDashes();
+    void printDodo();
     void setLastDot(bool lastDot);
     
     private:
@@ -20,12 +21,13 @@ class RetroLED {
     static const uint8_t DIGIT_MAPPING[4];
     static const uint8_t NUMBER_CODES[10];
     static const uint8_t DECIMAL_POINT_CODE;
+    static const uint8_t DASH_CODE;
+    static const uint8_t DODO_CODES[4];
     
     HT16K33 driver;
 
-    uint8_t digits[8];
+    uint8_t digits[4];
     boolean lastDot;
 };
 
 #endif // __RETRO_LED_H__
-

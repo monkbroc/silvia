@@ -15,6 +15,8 @@ class Storage {
     double getKo();
     double getiTermSaturation();
     double getIntegralErrorBand();
+    double getSleep();
+    double getTwakeup();
 
     void setTargetTemperature(double value);
     void setKp(double value);
@@ -22,6 +24,8 @@ class Storage {
     void setKo(double value);
     void setiTermSaturation(double value);
     void setIntegralErrorBand(double value);
+    void setSleep(double value);
+    void setTwakeup(double value);
 
   private:
 
@@ -46,10 +50,11 @@ class Storage {
       double Ko;
       double iTermSaturation;
       double IntegralErrorBand;
+      double Sleep;
+      double Twakeup;
     } data;
 
     static const Data DEFAULT_DATA;
 };
 
 #endif // __STORAGE_H__
-

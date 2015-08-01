@@ -1,5 +1,13 @@
 #include "retro_led.h"
 
+/* 7 seg bit positions
+   --   33
+  |  | 5  4
+   --   77
+  |  | 2  0
+   --   66
+*/
+
 const uint8_t RetroLED::DIGIT_MAPPING[4] = { 4, 6, 2, 0 };
 const uint8_t RetroLED::NUMBER_CODES[10] = {
     0x7D, // 0
@@ -15,16 +23,16 @@ const uint8_t RetroLED::NUMBER_CODES[10] = {
 };
 
 const uint8_t RetroLED::DECIMAL_POINT_CODE = 0x02;
+const uint8_t RetroLED::DASH_CODE = 0x80;
+const uint8_t RetroLED::DODO_CODES[4] = { 0xD5, 0xC5, 0xD5, 0xC5 };
 
 void RetroLED::begin(uint8_t deviceNumber) {
     this->driver.begin(deviceNumber);
 }
 
-void RetroLED::setBrightness(uint8_t brightness) {
-    this->driver.setBrightness(brightness);
-}
-
 void RetroLED::print(float number) {
+    this->driver.setBrightness();
+
     // Don't bother with negative numbers right now
     if(number < 0) {
         number = 0;
@@ -45,13 +53,29 @@ void RetroLED::print(float number) {
         } else {
             code = NUMBER_CODES[wholeNumber % 10];
         }
-        this->digits[DIGIT_MAPPING[i]] = code;
+        this->digits[i] = code;
         wholeNumber /= 10;
     }
 
     // Add decimal point to the 3rd digit
-    this->digits[DIGIT_MAPPING[2]] |= DECIMAL_POINT_CODE;
+    this->digits[2] |= DECIMAL_POINT_CODE;
     
+    this->refreshDisplay();
+}
+
+void RetroLED::printDashes() {
+    this->driver.setBrightness();
+    for(int i = 0; i < 4; i++) {
+        this->digits[i] = DASH_CODE;
+    }
+    this->refreshDisplay();
+}
+
+void RetroLED::printDodo() {
+    this->driver.setBrightness(4);
+    for(int i = 0; i < 4; i++) {
+        this->digits[i] = DODO_CODES[i];
+    }
     this->refreshDisplay();
 }
 
@@ -61,10 +85,14 @@ void RetroLED::setLastDot(bool lastDot) {
 }
 
 void RetroLED::refreshDisplay() {
-    // Clear last dot
-    this->digits[DIGIT_MAPPING[3]] &= ~DECIMAL_POINT_CODE;
-    // Add last dot if enabled
-    this->digits[DIGIT_MAPPING[3]] |= this->lastDot ? DECIMAL_POINT_CODE : 0;
+    uint8_t driverDigits[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
     
-    this->driver.writeDisplay(this->digits, 0, 8);
+    for(int i = 0; i < 4; i++) {
+        driverDigits[DIGIT_MAPPING[i]] = this->digits[i];
+    }
+    
+    // Add last dot if enabled
+    driverDigits[DIGIT_MAPPING[3]] |= this->lastDot ? DECIMAL_POINT_CODE : 0;
+    
+    this->driver.writeDisplay(driverDigits, 0, 8);
 }

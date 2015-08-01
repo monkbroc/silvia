@@ -16,4 +16,3 @@ class MAX6675 {
   int8_t sclk, miso, cs;
   byte spiread(void);
 };
-

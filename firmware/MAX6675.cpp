@@ -65,4 +65,3 @@ byte MAX6675::spiread(void) {
 
   return d;
 }
-

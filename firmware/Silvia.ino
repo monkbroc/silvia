@@ -12,8 +12,12 @@
 // Thermocouple amplifier
 #include "MAX6675.h"
 
+// For resetting the I2C bus
+#include "i2c_hal.h"
+
 SYSTEM_MODE(SEMI_AUTOMATIC);
 
+bool temperatureValid = false;
 double temperature = 0;
 double relayDc = 0;
 char cals[64] = "";
@@ -45,7 +49,7 @@ void setupCloud() {
     Spark.variable("dc", &relayDc, DOUBLE);
     Spark.variable("cals", &cals, STRING);
     Spark.function("rssi", rssi);
-
+    
     cloudStorage.setup(&storage);    
 }
 
@@ -69,16 +73,37 @@ void setupDisplay() {
 }
 
 void loop() {
-    readTemperature();
-    controlTemperature();
+    resetDisplay();
+    if(storage.getSleep() == 1) {
+        processSleep();
+    } else {
+        readTemperature();
+        controlTemperature();
+    }
     publishData();
     updateCals();
     controlRelayByDelay();
 }
 
+void resetDisplay() {
+    HAL_I2C_End();
+    delay(1);
+    HAL_I2C_Begin(I2C_MODE_MASTER, 0x00);
+    
+}
+
+const double temperatureCalibration = -2.0;
+
 void readTemperature() {
-    temperature = thermo.readCelsius();
-    display.print(temperature);
+    double readTemperature = thermo.readCelsius();
+    if(readTemperature == 0.0) {
+        temperatureValid = false;
+        display.printDashes();
+    } else {
+        temperatureValid = true;
+        temperature = thermo.readCelsius() + temperatureCalibration;
+        display.print(temperature);
+    }
 }
 
 inline double limit(double value, double min, double max) {
@@ -98,6 +123,11 @@ const double iTermSaturation = 10; /* Integral anti-windup */
 const double integralErrorBand = 10; /* Don't compute integral outside this band */
 
 void controlTemperature() {
+    if(!temperatureValid) {
+        relayDc = 0;
+        return;
+    }
+    
     error = storage.getTargetTemperature() - temperature;
     pTerm = storage.getKp() * error;
     
@@ -116,7 +146,8 @@ void publishData() {
             "\"dc\":" + String(relayDc, 1) + ","
             "\"e\":" + String(error, 1) + ","
             "\"p\":" + String(pTerm, 1) + ","
-            "\"i\":" + String(iTerm, 1)
+            "\"i\":" + String(iTerm, 1) + ","
+            "\"s\":" + String(storage.getSleep(), 0)
             + "}", 60, PRIVATE);
     }
 }
@@ -150,8 +181,21 @@ void controlRelayByDelay() {
             high = true;
         }
         // Process Wi-Fi messages
+        #ifndef PLATFORM_ID
         SPARK_WLAN_Loop();
+        #else
+        Spark.process();
+        #endif
         delayMicroseconds(1000); /* 1ms */
     }
+}
+
+void processSleep() {
+    display.printDodo();
+    if(Time.now() > (int)storage.getTwakeup()) {
+        storage.setSleep(0);
+    }
+    
+    relayDc = 0;
 }
 
