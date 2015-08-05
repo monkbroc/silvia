@@ -12,10 +12,33 @@
 // Thermocouple amplifier
 #include "MAX6675.h"
 
+// Mirror RGB LED
+#include "external_led.h"
+
 // For resetting the I2C bus
 #include "i2c_hal.h"
 
+// FIXME: for compiling on the develop firmware
+extern "C" char *_sbrk(int i) {
+    return 0;
+}
+
 SYSTEM_MODE(SEMI_AUTOMATIC);
+
+void setupStorage();
+void setupCloud();
+void setupRelay();
+void setupDisplay();
+int rssi(String arg);
+int setCal(String arg);
+void resetDisplay();
+void processSleep();
+void readTemperature();
+void publishData();
+void updateCals();
+void controlRelayByDelay();
+void controlTemperature();
+void externalLEDHandler(uint8_t r, uint8_t g, uint8_t b);
 
 bool temperatureValid = false;
 double temperature = 0;
@@ -24,15 +47,18 @@ char cals[64] = "";
 
 MAX6675 thermo(SCK, SS, MISO);
 
-const int RELAY_PIN = D3;
-const int RELAY_POWER_PIN = D4;
+const int RELAY_PIN = D5;
+const int RELAY_POWER_PIN = D6;
 const int RELAY_PERIOD_MILLIS = 1000;
 
 RetroLED display;
 
 Storage storage;
 
+ExternalLed externalLed(D3);
+
 void setup() {
+    externalLed.begin();
     setupStorage();
     setupCloud();
     setupRelay();
@@ -49,7 +75,7 @@ void setupCloud() {
     Spark.variable("dc", &relayDc, DOUBLE);
     Spark.variable("cals", &cals, STRING);
     Spark.function("rssi", rssi);
-    
+
     cloudStorage.setup(&storage);    
 }
 
@@ -89,7 +115,7 @@ void resetDisplay() {
     HAL_I2C_End();
     delay(1);
     HAL_I2C_Begin(I2C_MODE_MASTER, 0x00);
-    
+
 }
 
 const double temperatureCalibration = -2.0;
@@ -127,10 +153,10 @@ void controlTemperature() {
         relayDc = 0;
         return;
     }
-    
+
     error = storage.getTargetTemperature() - temperature;
     pTerm = storage.getKp() * error;
-    
+
     double band = storage.getIntegralErrorBand();
     if(error < band && error > -band) {
         double sat = storage.getiTermSaturation();
@@ -142,27 +168,27 @@ void controlTemperature() {
 void publishData() {
     if(Spark.connected()) {
         Spark.publish("coffee", "{"
-            "\"temp\":" + String(temperature, 1) + ","
-            "\"dc\":" + String(relayDc, 1) + ","
-            "\"e\":" + String(error, 1) + ","
-            "\"p\":" + String(pTerm, 1) + ","
-            "\"i\":" + String(iTerm, 1) + ","
-            "\"s\":" + String(storage.getSleep(), 0)
-            + "}", 60, PRIVATE);
+                "\"temp\":" + String(temperature, 1) + ","
+                "\"dc\":" + String(relayDc, 1) + ","
+                "\"e\":" + String(error, 1) + ","
+                "\"p\":" + String(pTerm, 1) + ","
+                "\"i\":" + String(iTerm, 1) + ","
+                "\"s\":" + String(storage.getSleep(), 0)
+                + "}", 60, PRIVATE);
     }
 }
 
 void updateCals() {
     String calsValue = String("{") +
-            "\"sp\":" + String(storage.getTargetTemperature(), 1) + ","
-            "\"Kp\":" + String(storage.getKp(), 1) + ","
-            "\"Ki\":" + String(storage.getKi(), 3) + ","
-            "\"Ko\":" + String(storage.getKo(), 1) + ","
-            "\"iSat\":" + String(storage.getiTermSaturation(), 1)
-            + "}";
+        "\"sp\":" + String(storage.getTargetTemperature(), 1) + ","
+        "\"Kp\":" + String(storage.getKp(), 1) + ","
+        "\"Ki\":" + String(storage.getKi(), 3) + ","
+        "\"Ko\":" + String(storage.getKo(), 1) + ","
+        "\"iSat\":" + String(storage.getiTermSaturation(), 1)
+        + "}";
 
-  // Set global char array
-  calsValue.toCharArray(cals, countof(cals));
+    // Set global char array
+    calsValue.toCharArray(cals, countof(cals));
 }
 
 void controlRelayByDelay() {
@@ -181,11 +207,11 @@ void controlRelayByDelay() {
             high = true;
         }
         // Process Wi-Fi messages
-        #ifndef PLATFORM_ID
+#ifndef PLATFORM_ID
         SPARK_WLAN_Loop();
-        #else
+#else
         Spark.process();
-        #endif
+#endif
         delayMicroseconds(1000); /* 1ms */
     }
 }
@@ -195,7 +221,7 @@ void processSleep() {
     if(Time.now() > (int)storage.getTwakeup()) {
         storage.setSleep(0);
     }
-    
+
     relayDc = 0;
 }
 
