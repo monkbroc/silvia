@@ -17,7 +17,7 @@ const CloudStorage::CloudStorageMethod CloudStorage::cloudStorageMethods[] = {
 // Singleton instance
 CloudStorage cloudStorage;
 
-// Spark.function and Spark.variable expect globals.
+// Particle.function and Particle.variable expect globals.
 // Static at least restricts them to this file.
 static int cloudSet(String value) {
   return cloudStorage.set(value);
@@ -30,9 +30,9 @@ static char getResult[64];
 void CloudStorage::setup(Storage *storage) {
   this->storage = storage;
 
-  Spark.function("set", cloudSet);
-  Spark.function("get", cloudGet);
-  Spark.variable("result", getResult, STRING);
+  Particle.function("set", cloudSet);
+  Particle.function("get", cloudGet);
+  Particle.variable("result", getResult, STRING);
 }
 
 int CloudStorage::set(String assignment) {
